@@ -1,67 +1,74 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Search, ArrowUpCircle, ArrowDownCircle, Loader2 } from "lucide-react"
+import { useState, useEffect } from "react";
+import { Search, ArrowUpCircle, ArrowDownCircle, Loader2 } from "lucide-react";
+import TradingChart from "../components/TradingChart";
 
 export default function StockDetails() {
-  const [searchInput, setSearchInput] = useState("")
-  const [stockName, setStockName] = useState("")
-  const [hasSearched, setHasSearched] = useState(false)
-  const [stockData, setStockData] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const [searchInput, setSearchInput] = useState("");
+  const [stockName, setStockName] = useState("");
+  const [hasSearched, setHasSearched] = useState(false);
+  const [stockData, setStockData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleSearch = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (searchInput.trim()) {
-      setStockName(searchInput.trim())
-      setHasSearched(true)
+      setStockName(searchInput.trim());
+      setHasSearched(true);
     }
-  }
+  };
 
   useEffect(() => {
-    if (!stockName) return
+    if (!stockName) return;
 
     async function fetchStockData() {
-      setLoading(true)
-      setError(null)
-      setStockData(null)
+      setLoading(true);
+      setError(null);
+      setStockData(null);
 
       try {
-        const apiUrl = `http://127.0.0.1:8000/api/stock/${stockName}/`
+        const apiUrl = `http://127.0.0.1:8000/api/stock/${stockName}/`;
         const response = await fetch(apiUrl, {
           headers: {
             Accept: "application/json",
           },
-        })
+        });
 
         if (!response.ok) {
-          const errorText = await response.text()
-          throw new Error(`Failed to fetch stock data: ${response.status} ${response.statusText}`)
+          const errorText = await response.text();
+          throw new Error(
+            `Failed to fetch stock data: ${response.status} ${response.statusText}`
+          );
         }
 
-        const data = await response.json()
-        setStockData(data)
+        const data = await response.json();
+        setStockData(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "An unknown error occurred")
+        setError(
+          err instanceof Error ? err.message : "An unknown error occurred"
+        );
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    fetchStockData()
-  }, [stockName])
+    fetchStockData();
+  }, [stockName]);
 
   const renderContent = () => {
     if (!hasSearched) {
       return (
         <div className="text-center py-12 bg-gray-50 rounded-lg border border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-700 mb-2">Enter a Stock Symbol to Begin</h2>
+          <h2 className="text-xl font-semibold text-gray-700 mb-2">
+            Enter a Stock Symbol to Begin
+          </h2>
           <p className="text-gray-600">
             Search for a stock by entering its symbol above (e.g., NABIL, ADBL)
           </p>
         </div>
-      )
+      );
     }
 
     if (loading) {
@@ -70,7 +77,7 @@ export default function StockDetails() {
           <Loader2 className="h-12 w-12 animate-spin text-teal-600 mb-4" />
           <p className="text-lg">Loading stock data for "{stockName}"...</p>
         </div>
-      )
+      );
     }
 
     if (error) {
@@ -79,15 +86,16 @@ export default function StockDetails() {
           <h2 className="text-xl font-semibold text-red-700 mb-2">Error</h2>
           <p className="text-red-600">{error}</p>
           <p className="mt-4 text-gray-700">
-            Please check if the stock symbol is correct and the API server is running at http://127.0.0.1:8000
+            Please check if the stock symbol is correct and the API server is
+            running at http://127.0.0.1:8000
           </p>
         </div>
-      )
+      );
     }
 
-    if (!stockData) return null
+    if (!stockData) return null;
 
-    const isPositive = parseFloat(stockData["% Change"]) >= 0
+    const isPositive = parseFloat(stockData["% Change"]) >= 0;
 
     return (
       <div className="bg-white border rounded-lg shadow-lg overflow-hidden mt-6">
@@ -95,11 +103,19 @@ export default function StockDetails() {
           <div className="flex justify-between items-start">
             <div>
               <h2 className="text-2xl font-bold">{stockData["Symbol"]}</h2>
-              <p className="text-gray-500">{stockData["Company Name"] || "Stock Details"}</p>
+              <p className="text-gray-500">
+                {stockData["Company Name"] || "Stock Details"}
+              </p>
             </div>
             <div className="text-right">
-              <p className="text-3xl font-bold">Rs. {parseFloat(stockData["LTP"] || 0).toFixed(2)}</p>
-              <div className={`flex items-center ${isPositive ? "text-green-600" : "text-red-600"}`}>
+              <p className="text-3xl font-bold">
+                Rs. {parseFloat(stockData["LTP"] || 0).toFixed(2)}
+              </p>
+              <div
+                className={`flex items-center ${
+                  isPositive ? "text-green-600" : "text-red-600"
+                }`}
+              >
                 {isPositive ? (
                   <ArrowUpCircle className="h-5 w-5 mr-1" />
                 ) : (
@@ -111,28 +127,39 @@ export default function StockDetails() {
               </div>
             </div>
           </div>
+          
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
           {Object.entries(stockData).map(([key, value]) => {
             if (
-              ["Stock Symbol", "LTP", "Change", "Percent Change", "Company Name"].includes(key) ||
+              [
+                "Stock Symbol",
+                "LTP",
+                "Change",
+                "Percent Change",
+                "Company Name",
+              ].includes(key) ||
               !value
             ) {
-              return null
+              return null;
             }
 
             return (
-              <div key={key} className="flex justify-between py-2 border-b border-gray-100">
+              <div
+                key={key}
+                className="flex justify-between py-2 border-b border-gray-100"
+              >
                 <span className="text-gray-600">{key}</span>
                 <span className="font-medium">{value}</span>
               </div>
-            )
+            );
           })}
         </div>
+        <TradingChart />
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <main className="container mx-auto px-4 py-8">
@@ -162,5 +189,5 @@ export default function StockDetails() {
 
       {renderContent()}
     </main>
-  )
+  );
 }
