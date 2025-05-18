@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Search, ArrowUpCircle, ArrowDownCircle, Loader2 } from "lucide-react";
 import TradingChart from "../components/TradingChart";
+import Navbar from "../components/Navbar";
 
 export default function StockDetails() {
   const [searchInput, setSearchInput] = useState("");
@@ -98,96 +99,100 @@ export default function StockDetails() {
     const isPositive = parseFloat(stockData["% Change"]) >= 0;
 
     return (
-      <div className="bg-white border rounded-lg shadow-lg overflow-hidden mt-6">
-        <div className="p-6 border-b">
-          <div className="flex justify-between items-start">
-            <div>
-              <h2 className="text-2xl font-bold">{stockData["Symbol"]}</h2>
-              <p className="text-gray-500">
-                {stockData["Company Name"] || "Stock Details"}
-              </p>
-            </div>
-            <div className="text-right">
-              <p className="text-3xl font-bold">
-                Rs. {parseFloat(stockData["LTP"] || 0).toFixed(2)}
-              </p>
-              <div
-                className={`flex items-center ${
-                  isPositive ? "text-green-600" : "text-red-600"
-                }`}
-              >
-                {isPositive ? (
-                  <ArrowUpCircle className="h-5 w-5 mr-1" />
-                ) : (
-                  <ArrowDownCircle className="h-5 w-5 mr-1" />
-                )}
-                <span className="font-medium">
-                  {stockData["% Change"] + " % Changed"}
-                </span>
+      <>
+        <div className="bg-white border rounded-lg shadow-lg overflow-hidden mt-6">
+          <div className="p-6 border-b">
+            <div className="flex justify-between items-start">
+              <div>
+                <h2 className="text-2xl font-bold">{stockData["Symbol"]}</h2>
+                <p className="text-gray-500">
+                  {stockData["Company Name"] || "Stock Details"}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-3xl font-bold">
+                  Rs. {parseFloat(stockData["LTP"] || 0).toFixed(2)}
+                </p>
+                <div
+                  className={`flex items-center ${
+                    isPositive ? "text-green-600" : "text-red-600"
+                  }`}
+                >
+                  {isPositive ? (
+                    <ArrowUpCircle className="h-5 w-5 mr-1" />
+                  ) : (
+                    <ArrowDownCircle className="h-5 w-5 mr-1" />
+                  )}
+                  <span className="font-medium">
+                    {stockData["% Change"] + " % Changed"}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-          
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
-          {Object.entries(stockData).map(([key, value]) => {
-            if (
-              [
-                "Stock Symbol",
-                "LTP",
-                "Change",
-                "Percent Change",
-                "Company Name",
-              ].includes(key) ||
-              !value
-            ) {
-              return null;
-            }
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
+            {Object.entries(stockData).map(([key, value]) => {
+              if (
+                [
+                  "Stock Symbol",
+                  "LTP",
+                  "Change",
+                  "Percent Change",
+                  "Company Name",
+                ].includes(key) ||
+                !value
+              ) {
+                return null;
+              }
 
-            return (
-              <div
-                key={key}
-                className="flex justify-between py-2 border-b border-gray-100"
-              >
-                <span className="text-gray-600">{key}</span>
-                <span className="font-medium">{value}</span>
-              </div>
-            );
-          })}
+              return (
+                <div
+                  key={key}
+                  className="flex justify-between py-2 border-b border-gray-100"
+                >
+                  <span className="text-gray-600">{key}</span>
+                  <span className="font-medium">{value}</span>
+                </div>
+              );
+            })}
+          </div>
+          <TradingChart />
         </div>
-        <TradingChart />
-      </div>
+      </>
     );
   };
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Stock Details Viewer</h1>
+    <>
+      <Navbar />
+      <main className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-6">Stock Details Viewer</h1>
 
-      <form onSubmit={handleSearch} className="mb-8">
-        <div className="flex gap-2">
-          <div className="relative flex-1">
-            <input
-              type="text"
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              placeholder="Enter stock symbol (e.g., NABIL)"
-              className="w-full px-4 py-2 pl-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-              required
-            />
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+        <form onSubmit={handleSearch} className="mb-8">
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder="Enter stock symbol (e.g., NABIL)"
+                className="w-full px-4 py-2 pl-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                required
+              />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            </div>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors"
+            >
+              Search
+            </button>
           </div>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors"
-          >
-            Search
-          </button>
-        </div>
-      </form>
+        </form>
 
-      {renderContent()}
-    </main>
+        {renderContent()}
+      </main>
+    </>
   );
 }

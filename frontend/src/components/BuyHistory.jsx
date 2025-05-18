@@ -4,17 +4,17 @@ import { Edit2, Trash2 } from "lucide-react";
 
 // Helper to get broker rate based on total amount
 const getBrokerRate = (amount) => {
-  if (amount <= 50000) return 0.004;
-  else if (amount <= 500000) return 0.0037;
-  else if (amount <= 2000000) return 0.0034;
-  else if (amount <= 10000000) return 0.003;
-  else return 0.0027;
+  if (amount <= 50000) return 0.0036; // 0.4%
+  else if (amount <= 500000) return 0.0037; // 0.37%
+  else if (amount <= 2000000) return 0.0034; // 0.34%
+  else if (amount <= 10000000) return 0.003; // 0.30%
+  else return 0.0027; // 0.27%
 };
-
-// Calculate actual commission (excluding VAT)
 const getCommission = (amount) => {
-  const rate = getBrokerRate(amount);
-  return amount * (rate / 1.13);
+  const rateWithVAT = getBrokerRate(amount);
+  //! const baseRate = rateWithVAT / 1.13; 
+  const commission = amount * rateWithVAT;
+  return parseFloat(commission.toFixed(2));
 };
 
 const BuyHistory = () => {
@@ -63,7 +63,7 @@ const BuyHistory = () => {
           <tbody>
             {buyPortfolio.map((item, idx) => {
               const qty = parseFloat(item.quantity || 0);
-              const price = parseFloat(item.purchase_price || 0);
+              const price = parseFloat(item.price || 0);
               const total = qty * price;
 
               const sebon = total * 0.00015;
@@ -84,7 +84,7 @@ const BuyHistory = () => {
                     </button>
                   </td>
                   <td className="py-2 px-4 border-b">{item.stock_symbol || "-"}</td>
-                  <td className="py-2 px-4 border-b">{item.purchase_date || "-"}</td>
+                  <td className="py-2 px-4 border-b">{item.date || "-"}</td>
                   <td className="py-2 px-4 border-b">{item.type || "-"}</td>
                   <td className="py-2 px-4 border-b">{qty}</td>
                   <td className="py-2 px-4 border-b">{price.toFixed(2)}</td>
