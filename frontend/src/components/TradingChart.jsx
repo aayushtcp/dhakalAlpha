@@ -13,7 +13,7 @@ const TradingChart = () => {
         symbol: "NASDAQ:AAPL", //symbol
         interval: "D",
         timezone: "Etc/UTC",
-        theme: "dark",
+        theme: "light",
         style: "1",
         locale: "en",
         toolbar_bg: "#f1f3f6",

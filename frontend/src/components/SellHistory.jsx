@@ -17,12 +17,35 @@ const getCommission = (amount) => {
   return parseFloat(commission.toFixed(2));
 };
 
-const calculateCGT = (purchasePrice, sellingPrice, quantity, commission, taxRate) => {
-  const capitalGain = (sellingPrice * quantity) - (purchasePrice * quantity) - commission;
+const calculateCGT = (
+  purchasePrice,
+  sellingPrice,
+  quantity,
+  commission,
+  taxRate
+) => {
+  const capitalGain =
+    sellingPrice * quantity - purchasePrice * quantity - commission;
   if (capitalGain <= 0) return 0;
   return +(capitalGain * (taxRate / 100)).toFixed(2);
 };
 
+const calculateProfit = (
+  purchasePrice,
+  sellingPrice,
+  cgt,
+  commission,
+  sebon,
+  dp,
+  quantity
+) => {
+  const capitalGain =
+    sellingPrice * quantity - purchasePrice * quantity - commission;
+
+  if (capitalGain <= 0) return 0;
+
+  return +(capitalGain - cgt - dp).toFixed(2);
+};
 const SellHistory = () => {
   const { portfoliobycontext } = usePortfolio();
   const [portfolio, setPortfolio] = useState([]);
@@ -86,7 +109,7 @@ const SellHistory = () => {
               const dp = 25;
               const amountPaid = total + sebon + commission + dp;
               const effectiveRate = amountPaid / qty;
-              const taxrate = parseFloat(item.capital_gain_tax || 7.5)
+              const taxrate = parseFloat(item.capital_gain_tax || 7.5);
 
               // Fallback to 0 if data is not present
               const sellAmount = total || 0;
@@ -98,10 +121,18 @@ const SellHistory = () => {
                 sellPrice,
                 qty,
                 commission,
-                taxrate,
+                taxrate
               );
               const netReceive = total - commission - sebon - dp - cgt || 0;
-              const profitAmount = parseFloat(item.profit_amount) || 0;
+              const profitAmount = calculateProfit(
+                223.85,
+                sellPrice,
+                cgt,
+                commission,
+                sebon,
+                dp,
+                qty
+              );
 
               return (
                 <tr

@@ -27,6 +27,7 @@ def latest_market_data(request):
     url = "https://merolagani.com/latestMarket.aspx"
 
     try:
+        print("Fetching latest market data...")  # Debugging line
         # Making GET request
         con = requests.get(url)
         soup = BeautifulSoup(con.text, 'lxml')  # Parse the whole page
@@ -47,9 +48,11 @@ def latest_market_data(request):
              for index, cell in enumerate(row.find_all("td"))}
             for row in data
         ]
+        print(result) # Debugging line to check the result
 
         return Response(result, status=status.HTTP_200_OK)
     except Exception as e:
+        print(f"Error fetching latest market data: {e}")  # Debugging line
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -78,6 +81,7 @@ def get_stock_data(request, symbol):
                 stock_data = {headers[i]: col.text.strip()
                               for i, col in enumerate(columns)}
                 return Response(stock_data, status=status.HTTP_200_OK)
+            
 
         return Response({'error': 'Stock symbol not found'}, status=status.HTTP_404_NOT_FOUND)
 

@@ -56,6 +56,7 @@ const AllData = () => {
   const handleClearSearch = () => {
     setSearchTerm("")
   }
+  console.log(data);
 
   if (loading) {
     return (

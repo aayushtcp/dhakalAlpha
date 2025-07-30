@@ -3,6 +3,8 @@ import { usePortfolio } from "../services/PortfolioContext";
 import BuyHistory from "../components/BuyHistory";
 import SellHistory from "../components/SellHistory";
 import Navbar from "../components/Navbar";
+import PortfolioValue from "../components/PortfolioValue";
+import CurrentInvestment from "../components/CurrentInvestment";
 
 const Portfolio = () => {
   const { portfoliobycontext } = usePortfolio();
@@ -64,6 +66,8 @@ const Portfolio = () => {
         </div>
         <BuyHistory />
         <SellHistory />
+        <PortfolioValue/>
+        <CurrentInvestment/>
       </div>
     </>
   );
